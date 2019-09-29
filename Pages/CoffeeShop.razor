@@ -1,0 +1,84 @@
+@using System.Linq;
+@using System.Collections.Generic;
+
+@page "/coffeeshop"
+
+<h1>Coffee Shop Ordering System</h1>
+
+<p>Total items: @totalNumberOfOrders</p>
+
+Order Name: <input type="text" name="order_name" @bind="userInputName" /><br>
+Price: <input type="number" name="order_price" @bind="userInputPrice" /><br>
+<button class="btn btn-primary" @onclick="AddToOrders">Add Order</button>
+
+@if (orders == null || orders.Any() == false)
+{
+    <p>No order yet!</p>
+}
+else 
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in orders)
+            {
+                <tr>
+                    <td>@order.OrderName</td>
+                    <td>@order.Price</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code 
+{
+    int totalNumberOfOrders = 0;
+    Order currentOrder { get; set; }
+    List<Order> orders;
+    string userInputName { get; set; }
+    decimal userInputPrice { get; set; }
+
+    void AddToOrders() 
+    {
+        totalNumberOfOrders++;
+        currentOrder = CreateOrder(userInputName, userInputPrice);
+
+        if (orders == null)
+        {
+            orders = new List<Order>();
+        }
+
+        orders.Add(currentOrder);
+
+        ClearInputValue();
+
+    }
+
+    void ClearInputValue() 
+    {
+        userInputName = string.Empty;
+        userInputPrice = 0m;
+    }
+
+    Order CreateOrder(string name, decimal price)
+    {
+        Console.WriteLine(name);
+        return new Order 
+        {
+            OrderName = name,
+            Price = price
+        };
+    }
+
+    public class Order 
+    {
+        public string OrderName { get; set; }
+        public decimal Price { get; set; }
+    }
+}
